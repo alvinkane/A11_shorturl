@@ -1,6 +1,5 @@
 const express = require("express");
 const exphbs = require("express-handlebars");
-const path = require("path");
 
 const app = express();
 
@@ -11,8 +10,7 @@ app.engine("hbs", exphbs({ defaultLayout: "main", extname: "hbs" }));
 app.set("view engine", "hbs");
 
 // 引用圖片
-// app.use(express.static("public"));
-app.use("/images", express.static(path.join(__dirname, "/public/images")));
+app.use(express.static("public"));
 
 // 首頁
 app.get("/", (req, res) => {
