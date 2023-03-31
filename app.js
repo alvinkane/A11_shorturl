@@ -47,6 +47,9 @@ app.get("/:shortURL", (req, res) => {
 
 // 縮短網址
 app.post("/shortener", (req, res) => {
+  if (!req.body.url.length) {
+    return res.redirect("/");
+  }
   const URL = req.body.url;
   const randomQuantity = 5;
   // 建立所有数字数组
