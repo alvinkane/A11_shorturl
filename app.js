@@ -64,19 +64,21 @@ app.post("/shortener", (req, res) => {
   }
   const shortURL = `http://localhost:3000/${randomNumber}`;
   Shorten.create({ URL, shortURL })
-    .then(() => res.redirect(`/shortener`))
-    .catch((error) => console.log(error));
+    .then((shorten) => {
+      res.redirect(`/shortener/${shorten._id}`);
+    })
+    .catch((err) => console.log(err));
 });
 
 // 縮短網址頁面
-app.get("/shortener", (req, res) => {
-  // const id = req.params.id;
-  Shorten.find()
+app.get("/shortener/:id", (req, res) => {
+  const id = req.params.id;
+  Shorten.findById(id)
     .lean()
     .then((shorten) => {
-      console.log(shorten);
-      res.render("shortener", { shorten: shorten[0] });
-    });
+      res.render("shortener", { shorten });
+    })
+    .catch((err) => console.log(err));
 });
 
 // 監聽
