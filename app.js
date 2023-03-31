@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
 
 // 縮短網址
 app.post("/shortener", (req, res) => {
-  const url = req.body.url;
+  const URL = req.body.url;
   const randomQuantity = 5;
   // 建立所有数字数组
   const numbers = Array.from(Array(10).keys());
@@ -63,9 +63,20 @@ app.post("/shortener", (req, res) => {
     randomNumber += randomWord[Math.floor(Math.random() * randomWord.length)];
   }
   const shortURL = `http://localhost:3000/${randomNumber}`;
-  Shorten.create({ url, shortURL })
-    .then(() => res.redirect("/shortener"))
+  Shorten.create({ URL, shortURL })
+    .then(() => res.redirect(`/shortener`))
     .catch((error) => console.log(error));
+});
+
+// 縮短網址頁面
+app.get("/shortener", (req, res) => {
+  // const id = req.params.id;
+  Shorten.find()
+    .lean()
+    .then((shorten) => {
+      console.log(shorten);
+      res.render("shortener", { shorten: shorten[0] });
+    });
 });
 
 // 監聽
