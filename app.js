@@ -38,6 +38,13 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+// 前往被縮短網址的頁面
+app.get("/:shortURL", (req, res) => {
+  Shorten.findOne({ shortURL: req.params.shortURL }).then((shorten) => {
+    res.redirect(shorten.URL);
+  });
+});
+
 // 縮短網址
 app.post("/shortener", (req, res) => {
   const URL = req.body.url;
@@ -62,7 +69,7 @@ app.post("/shortener", (req, res) => {
   for (let i = 0; i < randomQuantity; i++) {
     randomNumber += randomWord[Math.floor(Math.random() * randomWord.length)];
   }
-  const shortURL = `http://localhost:3000/${randomNumber}`;
+  const shortURL = `${randomNumber}`;
   Shorten.create({ URL, shortURL })
     .then((shorten) => {
       res.redirect(`/shortener/${shorten._id}`);
