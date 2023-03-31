@@ -52,26 +52,44 @@ app.post("/shortener", (req, res) => {
   }
   const URL = req.body.url;
   const randomQuantity = 5;
-  // 建立所有数字数组
+  // 建立所有數字
   const numbers = Array.from(Array(10).keys());
-
-  // 建立所有小写字母数组
+  // 建立所有英文小寫
   const lowerCaseLetters = Array.from(Array(26), (_, i) =>
     String.fromCharCode("a".charCodeAt(0) + i)
   );
-
-  // 建立所有大写字母数组
+  // 建立所有英文大寫
   const upperCaseLetters = Array.from(Array(26), (_, i) =>
     String.fromCharCode("A".charCodeAt(0) + i)
   );
-
-  // 建立所有数字和字母数组
-  const randomWord = [...numbers, ...lowerCaseLetters, ...upperCaseLetters];
-
   let randomNumber = "";
-  for (let i = 0; i < randomQuantity; i++) {
-    randomNumber += randomWord[Math.floor(Math.random() * randomWord.length)];
+  // 每種都包含一個
+  randomNumber += numbers[Math.floor(Math.random() * numbers.length)];
+  randomNumber +=
+    lowerCaseLetters[Math.floor(Math.random() * lowerCaseLetters.length)];
+  randomNumber +=
+    upperCaseLetters[Math.floor(Math.random() * upperCaseLetters.length)];
+
+  for (let i = 3; i < randomQuantity; i++) {
+    const allCharacters = [
+      ...numbers,
+      ...lowerCaseLetters,
+      ...upperCaseLetters,
+    ];
+    randomNumber +=
+      allCharacters[Math.floor(Math.random() * allCharacters.length)];
   }
+
+  // Fisher-Yates Shuffle
+  const randomNumberArray = randomNumber.split("");
+  for (let index = randomNumberArray.length - 1; index > 0; index--) {
+    let randomIndex = Math.floor(Math.random() * (index + 1));
+    [randomNumberArray[index], randomNumberArray[randomIndex]] = [
+      randomNumberArray[randomIndex],
+      randomNumberArray[index],
+    ];
+  }
+  randomNumber = randomNumberArray.join("");
   const shortURL = `${randomNumber}`;
   Shorten.findOne({ URL })
     .then((shorten) => {
