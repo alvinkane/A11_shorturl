@@ -70,9 +70,17 @@ app.post("/shortener", (req, res) => {
     randomNumber += randomWord[Math.floor(Math.random() * randomWord.length)];
   }
   const shortURL = `${randomNumber}`;
-  Shorten.create({ URL, shortURL })
+  Shorten.findOne({ URL })
     .then((shorten) => {
-      res.redirect(`/shortener/${shorten._id}`);
+      if (!shorten) {
+        Shorten.create({ URL, shortURL })
+          .then((shorten) => {
+            res.redirect(`/shortener/${shorten._id}`);
+          })
+          .catch((err) => console.log(err));
+      } else {
+        res.redirect(`/shortener/${shorten._id}`);
+      }
     })
     .catch((err) => console.log(err));
 });
