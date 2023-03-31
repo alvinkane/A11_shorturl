@@ -1,6 +1,8 @@
 const express = require("express");
 const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
+// import clipboard from "clipboardy";
+const clipboard = require("clipboardy");
 
 const Shorten = require("./models/shorten");
 
@@ -115,6 +117,15 @@ app.get("/shortener/:id", (req, res) => {
       res.render("shortener", { shorten });
     })
     .catch((err) => console.log(err));
+});
+
+// 複製網址
+app.get("/shortener/:id/copy", (req, res) => {
+  const id = req.params.id;
+  Shorten.findById(id).then((shorten) => {
+    clipboard.writeSync(`http://localhost:3000/${shorten.shortURL}`);
+    res.redirect(`/shortener/${id}`);
+  });
 });
 
 // 監聽
