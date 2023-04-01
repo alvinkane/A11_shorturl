@@ -37,6 +37,12 @@ app.use(express.urlencoded({ extended: true }));
 // routes
 app.use(routes);
 
+//錯誤處理
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
+
 // 監聽
 app.listen(port, () => {
   console.log(`this is running on http://localhost:${port}`);
