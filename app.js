@@ -1,10 +1,7 @@
 const express = require("express");
 const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
-// import clipboard from "clipboardy";
-const clipboard = require("clipboardy");
 
-const Shorten = require("./models/shorten");
 const routes = require("./routes");
 
 if (process.env.NODE_ENV !== "production") {
@@ -34,8 +31,10 @@ app.set("view engine", "hbs");
 // 引用圖片
 app.use(express.static("public"));
 
+// body
 app.use(express.urlencoded({ extended: true }));
 
+// routes
 app.use(routes);
 
 // 監聽

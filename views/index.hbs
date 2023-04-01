@@ -1,15 +1,24 @@
-<form action="/shorteners" method="POST">
+<form action="/shorteners" method="POST" class="needs-validation" novalidate>
   <div class="pt-5 pb-2">
     <input
       type="URL"
       name="url"
       placeholder="Input URL here"
-      class="p-2"
+      class="p-2 form-control was-validated"
       style="width:60vw"
+      required
     />
+    <div class="invalid-feedback">
+      Please provide a valid URL.
+    </div>
   </div>
   <div class="d-grid col-4 mx-auto">
-    <button type="submit" class="btn btn-outline-primary p-2">Shorten</button>
+    <button
+      type="submit"
+      class="btn btn-outline-primary p-2"
+      id="shorten-button"
+    >Shorten</button>
   </div>
-
 </form>
+
+<script src="/js/main.js"></script>

@@ -7,9 +7,6 @@ const Shorten = require("../../models/shorten");
 
 // 縮短網址
 router.post("/", (req, res) => {
-  if (!req.body.url.length) {
-    return res.redirect("/");
-  }
   const URL = req.body.url;
   const randomQuantity = 5;
   // 建立所有數字
@@ -29,7 +26,7 @@ router.post("/", (req, res) => {
     lowerCaseLetters[Math.floor(Math.random() * lowerCaseLetters.length)];
   randomNumber +=
     upperCaseLetters[Math.floor(Math.random() * upperCaseLetters.length)];
-
+  //剩餘的隨機
   for (let i = 3; i < randomQuantity; i++) {
     const allCharacters = [
       ...numbers,
@@ -39,8 +36,7 @@ router.post("/", (req, res) => {
     randomNumber +=
       allCharacters[Math.floor(Math.random() * allCharacters.length)];
   }
-
-  // Fisher-Yates Shuffle
+  // Fisher-Yates Shuffle，隨機排列
   const randomNumberArray = randomNumber.split("");
   for (let index = randomNumberArray.length - 1; index > 0; index--) {
     let randomIndex = Math.floor(Math.random() * (index + 1));
@@ -51,8 +47,10 @@ router.post("/", (req, res) => {
   }
   randomNumber = randomNumberArray.join("");
   const shortURL = `${randomNumber}`;
+  // 如果已經輸入過，就從資料庫回傳縮短過的亂碼
   Shorten.findOne({ URL })
     .then((shorten) => {
+      // 沒有的話就建立新的
       if (!shorten) {
         Shorten.create({ URL, shortURL })
           .then((shorten) => {
@@ -80,10 +78,12 @@ router.get("/:id", (req, res) => {
 // 複製網址
 router.get("/:id/copy", (req, res) => {
   const id = req.params.id;
-  Shorten.findById(id).then((shorten) => {
-    clipboard.writeSync(`http://localhost:3000/${shorten.shortURL}`);
-    res.redirect(`/shorteners/${id}`);
-  });
+  Shorten.findById(id)
+    .then((shorten) => {
+      clipboard.writeSync(`http://localhost:3000/${shorten.shortURL}`);
+      res.redirect(`/shorteners/${id}`);
+    })
+    .catch((err) => console.log(err));
 });
 
 module.exports = router;
